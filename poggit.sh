@@ -45,7 +45,7 @@ if [[ -n "$2" ]]; then
     SELECTED_ID="${IDS[$(($2-1))]}"
 else
     # Prompt user to select from available IDs
-    echo "Found ${#IDS[@]} IDS matching '':"
+    echo "Found ${#IDS[@]} IDS matching '$PLUGIN_NAME':"
     echo "Plugin IDS     API Version"
     for i in "${!IDS[@]}"; do
         echo "[$((i+1))] ${IDS[i]} (${FROM[i]} - ${TO[i]})"
@@ -81,3 +81,4 @@ case "$selectYN" in
   [Nn][Oo]) echo "Exiting.." && exit 0;;
   *) echo "Invaild options, Exiting..." && exit 1;;
 esac 
+ 
