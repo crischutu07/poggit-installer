@@ -1,28 +1,24 @@
 #!/usr/bin/env bash
 
-# Helper function to get user input
+# better read statements 
 function get_input() {
     read -p "$1: " value
     echo $value
 }
-
-# Get plugin name from command line argument
+cols="$(tput cols)" # better than $COLUMNS
 PLUGIN_NAME=$1
 
-# If plugin name was not provided, prompt user to enter it
 if [ -z "$PLUGIN_NAME" ]; then
     PLUGIN_NAME="$(get_input 'Enter plugin name')"
 fi
 if [[ "$PLUGIN_NAME" == "" ]]; then
     echo "You didn't enter plugin name" && exit 1
 fi
-# API URL for fetching plugin data
 SERVER="https://poggit.pmmp.io/releases.json"
-
-# Use curl and jq to fetch plugin data and extract IDs
-IDS="$(curl -s $SERVER\?name\=$PLUGIN_NAME | jq .[].id | grep -o '[0-9]\+' | paste -s -d ' ' )"
-FROM="$(curl -s $SERVER\?name\=$PLUGIN_NAME | jq -r .[].api[].from)"
-TO="$(curl -s $SERVER\?name\=$PLUGIN_NAME | jq -r .[].api[].to)"
+S_NAME="$(curl -s $SERVER\?name\=$PLUGIN_NAME)"
+IDS="$(echo "$S_NAME" |  jq .[].id | grep -o '[0-9]\+' | paste -s -d ' ')"
+FROM="$(echo "$S_NAME" |  jq -r .[].api[].from)"
+TO="$(echo "$S_NAME" | jq -r .[].api[].to)"
 FROM=($FROM)
 TO=($TO)
 
@@ -46,9 +42,9 @@ if [[ -n "$2" ]]; then
 else
     # Prompt user to select from available IDs
     echo "Found ${#IDS[@]} IDS matching '$PLUGIN_NAME':"
-    echo "Plugin IDS     API Version"
+    printf "%-$((cols/2))s%$((cols/2))s" "IDs" "APIs"
     for i in "${!IDS[@]}"; do
-        echo "[$((i+1))] ${IDS[i]} (${FROM[i]} - ${TO[i]})"
+        printf "%-$((cols/2))s%$((cols/2))s\n" "[$((i+1))] ${IDS[i]}" "${FROM[i]} - ${TO[i]}"
     done
     SELECTION="$(get_input 'Select a plugin ID (1-'${#IDS[@]}') ')"
 
@@ -63,20 +59,23 @@ else
 fi
 # Use the selected plugin ID to fetch plugin data
 PLUGIN="$(curl -s $SERVER\?id\=$SELECTED_ID)"
-getName="$(jq .[].name <<< $PLUGIN)"
-getTagline="$(jq .[].tagline <<< $PLUGIN)"
+getName="$(jq -r .[].name <<< $PLUGIN)"
+getTagline="$(jq  .[].tagline <<< $PLUGIN)"
 getFromAPI="$(jq -r .[].api[].from <<< $PLUGIN)"
 getToAPI="$(jq -r .[].api[].to <<< $PLUGIN)"
 getVer="$(jq -r .[].version <<< $PLUGIN)"
+
 echo "Name: $getName ($getVer)"
+
 echo "Description: $getTagline"
+
 echo "API: $getFromAPI-$getToAPI"
 
 
 read -p "Process to install? [Y/N] " selectYN
 case "$selectYN" in
-  [Yy][Ee][ss]) echo "Installing $1" && wget --quiet https://poggit.pmmp.io/r/$SELECTED_ID/$PLUGIN_NAME.phar && echo "Plugin '$PLUGIN_NAME' installed sucessfully" exit 0;;
-  [Yy]) echo "Installing $1" && wget --quiet https://poggit.pmmp.io/r/$SELECTED_ID/$PLUGIN_NAME.phar && echo "Plugin '$PLUGIN_NAME' installed sucessfully" exit 0;;
+  [Yy][Ee][ss]) echo "Installing $getName" && wget --quiet --show-progress https://poggit.pmmp.io/r/$SELECTED_ID/$getName.phar && echo "Plugin '$getName' installed sucessfully" exit 0;;
+  [Yy]) echo "Installing $getName" && wget --show-progress --quiet https://poggit.pmmp.io/r/$SELECTED_ID/$getName.phar && echo "[*] Plugin '$getName' installed sucessfully" exit 0;;
   [Nn]) echo "Exiting.." && exit 0;;
   [Nn][Oo]) echo "Exiting.." && exit 0;;
   *) echo "Invaild options, Exiting..." && exit 1;;
