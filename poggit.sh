@@ -64,9 +64,18 @@ getTagline="$(jq  .[].tagline <<< $PLUGIN)"
 getFromAPI="$(jq -r .[].api[].from <<< $PLUGIN)"
 getToAPI="$(jq -r .[].api[].to <<< $PLUGIN)"
 getVer="$(jq -r .[].version <<< $PLUGIN)"
+isOutdated="$(jq -r .[].is_outdated <<< $PLUGIN)"
+DEPS="$(jq -r .[].deps[].name <<< $PLUGIN)"
 
+for i in ${DEP[@]}; do
+echo "$(jq -r .[].deps[$i].name <<< $PLUGIN)"
+done
+
+if [[ "$isOutdated" == "true" ]]; then
+echo "Name: $getName ($getVer - OUTDATED)"
+else
 echo "Name: $getName ($getVer)"
-
+fi
 echo "Description: $getTagline"
 
 echo "API: $getFromAPI-$getToAPI"
