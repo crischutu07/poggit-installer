@@ -5,6 +5,9 @@ function get_input() {
     read -p "$1: " value
     echo $value
 }
+function wgetInstall (){
+  wget --quiet --show-progress $1
+}
 cols="$(tput cols)" # better than $COLUMNS
 PLUGIN_NAME=$1
 
@@ -59,16 +62,18 @@ else
 fi
 # Use the selected plugin ID to fetch plugin data
 PLUGIN="$(curl -s $SERVER\?id\=$SELECTED_ID)"
-getName="$(jq -r .[].name <<< $PLUGIN)"
-getTagline="$(jq  .[].tagline <<< $PLUGIN)"
-getFromAPI="$(jq -r .[].api[].from <<< $PLUGIN)"
-getToAPI="$(jq -r .[].api[].to <<< $PLUGIN)"
-getVer="$(jq -r .[].version <<< $PLUGIN)"
-isOutdated="$(jq -r .[].is_outdated <<< $PLUGIN)"
-DEPS="$(jq -r .[].deps[].name <<< $PLUGIN)"
+declare getName="$(jq -r .[].name <<< $PLUGIN)"
+declare getTagline="$(jq  .[].tagline <<< $PLUGIN)"
+declare getFromAPI="$(jq -r .[].api[].from <<< $PLUGIN)"
+declare getToAPI="$(jq -r .[].api[].to <<< $PLUGIN)"
+declare getVer="$(jq -r .[].version <<< $PLUGIN)"
+declare isOutdated="$(jq -r .[].is_outdated <<< $PLUGIN)"
+declare DEPS="$(jq -r .[].deps[] <<< $PLUGIN)"
 
-for i in ${DEP[@]}; do
-echo "$(jq -r .[].deps[$i].name <<< $PLUGIN)"
+for (( i=0; i<$DEP; i++ )); do
+    INFO="$(jq -r .deps[$i].depRelId <<< $PLUGIN)"
+    DEP_INFO="$(curl -s $SERVER/?id=$DEP_ID)"
+    wgetInstall "https://poggit.pmmp.io/r/$DEP_ID/$(jq -r .[].name <<< $DEP_INFO).phar"
 done
 
 if [[ "$isOutdated" == "true" ]]; then

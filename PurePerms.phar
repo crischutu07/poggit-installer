@@ -1,0 +1,107 @@
+<p>Documentation</p>
+<p>Terminate task</p>
+<p>void terminateTask(string $task_name)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+Description: Cancels and removes task from the task list.<br>
+returns - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;terminateTask('your_task_name');<br>
+Kill Task</p>
+<p>void killTask(string $task_name)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+Description: Cancels task<br>
+return - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;cancelTask('your_task_name');<br>
+Resume Task</p>
+<p>void resumeTask(string $task_name)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+Description: Resumes a task that has been paused<br>
+returns - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;resumeTask('your_task_name');<br>
+Task Exists</p>
+<p>void taskExists(string $task_name)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+Description: Check if task exists<br>
+returns - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;taskExists('your_task_name');<br>
+Get Task</p>
+<p>void getTask(string $task_name)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+Description: Gets an existing task<br>
+returns - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;getTask('your_task_name');<br>
+Remove Task</p>
+<p>void removeTask(string $task_name)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+Description: removes an existing task from the task list<br>
+returns - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;removeTask('your_task_name');<br>
+Delayed Task</p>
+<p>void delayedTask(string $task_name, int $interval, $callback)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+$interval	int	Time to wait to run task in seconds<br>
+$callback	array / string	your callback function<br>
+Description: creates new delayed task (only runs once)<br>
+returns - void</p>
+<p>Example:</p>
+<p>function callback(){<br>
+//your code to run here<br>
+}<br>
+\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;delayedTask('your_task_name', 5, 'callback');//runs after 5 seconds<br>
+Repeating Task</p>
+<p>void repeatingTask(string $task_name, int $interval, $callback)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+$interval	int	Time to wait to run task in seconds<br>
+$callback	array / string	your callback function<br>
+Description: creates new delayed task (only runs once)<br>
+returns - void</p>
+<p>Example:</p>
+<p>function callback(){<br>
+//your code to run here<br>
+}<br>
+\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;repeatingTask('your_task_name', 5, 'callback');//runs every 5 seconds<br>
+Delayed Repeating Task</p>
+<p>void delayedRepeatingTask(string $task_name, $callback, int $delay, int $interval)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+$callback	array / string	your callback function<br>
+$delay	int	Time to wait to start task in seconds<br>
+$interval	int	Time to wait to run task in seconds<br>
+Description: creates new delayed repeating task<br>
+returns - void</p>
+<p>Example:</p>
+<p>function callback(){<br>
+//your code to run here<br>
+}<br>
+\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;delayedTask('your_task_name', 'callback', 5, 5);//runs after 5 seconds then runs every 5 seconds<br>
+Pause Task</p>
+<p>void pauseTask(string $task_name, int $seconds)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+$seconds	int	Time to pause the task in seconds<br>
+Description: pauses task for specific amount of seconds<br>
+returns - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;pauseTask('your_task_name', 5);//pause task for 5 seconds<br>
+End After</p>
+<p>void endAfter(string $task_name, int $seconds)<br>
+Parameter	Type	Description<br>
+$task_name	string	Task Indentifier<br>
+$seconds	int	Time to wait to end task in seconds<br>
+Description: ends task after specific amount of seconds<br>
+returns - void</p>
+<p>Example:</p>
+<p>\TaskAPI\Base::getInstance()-&gt;getTaskAPI()-&gt;endAfter('your_task_name', 5);//ends task after 5 seconds</p>
